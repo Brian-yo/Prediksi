@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Predict SMK Negeri Pasirian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1A2A6B;--navy2:#0F1A45;--navy3:#253580;--navy4:rgba(26,42,107,0.06);
+  --sky:#4A90C4;--sky2:#3578A8;--sky3:#D6E8F5;--sky4:#EBF4FB;
+  --gold:#C9940A;--gold2:#A37508;--gold3:#FDF3D8;--gold4:#F0D080;--gold5:#E8C060;
+  --red:#C0392B;--red2:#A02020;--red3:#FAE5E3;--red4:#F5CECE;
+  --green:#1E7A4A;--green3:#DFF2E9;
+  --cream:#F7F4EE;--cream2:#EDE9DF;--cream3:#E0DAD0;--cream4:#F2EEE6;
+  --ink:#1A1A18;--ink2:#3A3830;--ink3:#7A7468;--ink4:#A09880;
+  --border:#C8C0B0;--border2:#DDD8CE;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);
+  --shadow2:0 2px 8px rgba(0,0,0,0.08),0 8px 24px rgba(0,0,0,0.06);
+  --r:3px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--cream);min-height:100vh;font-size:14px;line-height:1.5;}
+.serif{font-family:'Cormorant Garamond',serif}
+.mono{font-family:'DM Mono',monospace}
+
+/* ── NAVBAR ── */
+.nav{background:var(--navy2);position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:54px;border-bottom:1px solid rgba(255,255,255,0.08);box-shadow:0 1px 0 rgba(0,0,0,0.2);}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}
+.nav-logo{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.12);border:1px solid rgba(240,208,128,0.3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.nav-logo-fb{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--gold4);}
+.nav-title .t1{font-size:12px;font-weight:600;color:var(--gold4);letter-spacing:0.05em;line-height:1.2;}
+.nav-title .t2{font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:0.08em;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-btn{background:none;border:none;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;letter-spacing:0.07em;text-transform:uppercase;color:rgba(255,255,255,0.5);padding:6px 14px;border-radius:var(--r);cursor:pointer;transition:color .15s,background .15s;}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,0.07)}
+.nav-btn.active{color:var(--gold4);font-weight:500}
+.nav-cta{background:var(--gold)!important;color:#fff!important;font-weight:600!important;padding:7px 18px!important;margin-left:6px;}
+.nav-cta:hover{background:var(--gold2)!important}
+.nav-ham{display:none;background:none;border:none;cursor:pointer;padding:6px;flex-direction:column;gap:4px;}
+.nav-ham span{display:block;width:20px;height:1.5px;background:rgba(255,255,255,0.7);transition:all .2s}
+.nav-ham.open span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+.nav-ham.open span:nth-child(2){opacity:0}
+.nav-ham.open span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+.nav-mobile{display:none;position:fixed;top:54px;left:0;right:0;background:var(--navy2);border-bottom:1px solid rgba(255,255,255,0.1);padding:12px 16px;flex-direction:column;gap:4px;z-index:99;animation:slideDown .2s ease;}
+.nav-mobile.open{display:flex}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.nav-mobile .nav-btn{text-align:left;padding:10px 14px;font-size:13px}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TOAST ── */
+#toast-wrap{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none;}
+.toast{display:flex;align-items:flex-start;gap:10px;background:var(--ink);color:#fff;padding:12px 16px;border-radius:var(--r);font-size:12px;line-height:1.5;box-shadow:var(--shadow2);pointer-events:auto;animation:toastIn .25s ease;max-width:280px;}
+.toast.success{background:var(--navy)}
+.toast.error{background:var(--red2)}
+.toast-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateX(16px)}}
+.toast.out{animation:toastOut .2s ease forwards}
+
+/* ── HOME ── */
+.hero{display:grid;grid-template-columns:1fr 320px;border-bottom:1px solid var(--border);}
+.hero-left{padding:36px 32px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid var(--border);}
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:20px;}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--gold)}
+.hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,5vw,4.2rem);font-weight:300;line-height:1.0;color:var(--ink);}
+.hero-h1 em{font-style:italic;color:var(--navy);display:block}
+.hero-h1 strong{font-weight:600;display:block}
+.hero-sub{font-size:12px;color:var(--ink3);line-height:1.8;max-width:380px;margin-top:16px}
+.hero-actions{display:flex;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap}
+.btn-primary{background:var(--navy);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:var(--r);cursor:pointer;transition:background .15s,transform .1s;}
+.btn-primary:hover{background:var(--navy2)}
+.btn-primary:active{transform:scale(0.98)}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--ink2);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.07em;text-transform:uppercase;padding:11px 20px;border-radius:var(--r);cursor:pointer;transition:all .15s;}
+.btn-outline:hover{border-color:var(--navy);color:var(--navy)}
+.hero-right{background:var(--navy);padding:28px;display:flex;flex-direction:column;gap:16px;}
+.school-card{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;gap:10px;}
+.school-logo{width:80px;height:80px;border-radius:50%;border:2px solid rgba(240,208,128,0.35);overflow:hidden;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;}
+.school-logo-fb{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--gold4)}
+.school-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--gold4);text-align:center}
+.school-sub{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);text-align:center}
+.status-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:5px 12px;color:rgba(255,255,255,0.55);}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#4AC47A;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r);overflow:hidden;}
+.hstat{padding:14px 10px;text-align:center}
+.hstat+.hstat{border-left:1px solid rgba(255,255,255,0.07)}
+.hstat-val{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--gold4);line-height:1;}
+.hstat-lbl{font-size:9px;letter-spacing:0.07em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:3px}
+.stripe{background:var(--navy2);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:0;overflow-x:auto;}
+.stripe::-webkit-scrollbar{height:0}
+.stripe-item{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;padding:0 18px;border-right:1px solid rgba(255,255,255,0.1);}
+.stripe-item:first-child{padding-left:0}
+.stripe-item:last-child{border-right:none}
+.how-section{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--border)}
+.how-label{padding:28px 24px;border-right:1px solid var(--border)}
+.how-label h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--ink);line-height:1.25}
+.how-label h3 em{font-style:italic;color:var(--navy)}
+.how-label p{font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.7}
+.how-steps{padding:28px 24px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.how-step{display:flex;gap:14px}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--gold);min-width:22px;margin-top:1px;flex-shrink:0;}
+.step-text h4{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:4px}
+.step-text p{font-size:11px;color:var(--ink3);line-height:1.6}
+.feat-section{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.feat-col{padding:22px 20px;border-right:1px solid var(--border)}
+.feat-col:last-child{border-right:none}
+.feat-icon{font-size:20px;margin-bottom:10px}
+.feat-col h4{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.feat-col p{font-size:11px;color:var(--ink3);line-height:1.65}
+.cta-bar{background:var(--gold3);border-top:2px solid var(--gold5);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.cta-bar p{font-size:12px;color:var(--gold2);font-weight:500}
+.cta-bar button{background:var(--navy);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:9px 20px;border-radius:var(--r);cursor:pointer;white-space:nowrap;transition:background .15s;}
+.cta-bar button:hover{background:var(--navy2)}
+
+/* ── PREDIKSI ── */
+.pred-layout{display:grid;grid-template-columns:1fr 300px}
+.pred-form{padding:32px 28px;border-right:1px solid var(--border)}
+.pred-side{padding:24px 20px;background:var(--navy2);display:flex;flex-direction:column;gap:16px;}
+.sec-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;margin-top:24px;display:flex;align-items:center;gap:10px;}
+.sec-label:first-child{margin-top:0}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border2)}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f-field{margin-bottom:12px}
+.f-label{font-size:11px;color:var(--ink3);margin-bottom:6px;display:block}
+.f-input{width:100%;height:42px;padding:0 14px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--cream2);border:1px solid var(--border);border-radius:var(--r);color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s;}
+.f-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,42,107,0.1);}
+.f-input.error{border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,0.1)}
+.f-error{font-size:11px;color:var(--red);margin-top:4px;display:none}
+.f-field.has-error .f-error{display:block}
+.slider-wrap{margin-bottom:12px}
+.slider-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.slider-label{font-size:11px;color:var(--ink3)}
+.slider-val{font-size:13px;font-weight:500;color:var(--ink);background:var(--cream2);border:1px solid var(--border);border-radius:var(--r);padding:3px 10px;min-width:48px;text-align:center;font-family:'DM Mono',monospace;}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:var(--cream3);border-radius:0;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--navy);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);cursor:pointer;transition:transform .1s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--navy);border:2px solid #fff;cursor:pointer;}
+.slider-markers{display:flex;justify-content:space-between;font-size:9px;color:var(--ink4);margin-top:2px;}
+.btn-submit{width:100%;height:48px;background:var(--navy);color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;border:none;border-radius:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px;transition:background .15s,transform .1s;position:relative;overflow:hidden;}
+.btn-submit::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);transform:translateX(-100%);transition:transform 0.6s ease;}
+.btn-submit:hover{background:var(--navy2)}
+.btn-submit:hover::after{transform:translateX(100%)}
+.btn-submit:active{transform:scale(0.99)}
+.btn-submit.loading{background:var(--sky2);pointer-events:none}
+.btn-submit svg.spin{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result-panel{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:20px;display:none;animation:resultIn .4s cubic-bezier(0.16,1,0.3,1);}
+@keyframes resultIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.rp-head{padding:20px 22px;border-bottom:1px solid var(--border)}
+.rp-head.lulus{background:var(--sky3);border-bottom-color:#B8D8EA}
+.rp-head.tidak{background:var(--red3);border-bottom-color:#EABBB8}
+.rp-tag{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:5px;font-weight:500;}
+.lulus .rp-tag{color:var(--sky2)}
+.tidak .rp-tag{color:var(--red2)}
+.rp-status{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;line-height:1.1;}
+.lulus .rp-status{color:var(--navy)}
+.tidak .rp-status{color:var(--red2)}
+.rp-body{padding:18px 22px}
+.rp-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
+.rpm{background:var(--cream);padding:12px 8px;text-align:center}
+.rpm-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--navy);display:block;line-height:1;}
+.rpm-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);margin-top:3px}
+.conf-row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink3);margin-bottom:6px}
+.conf-row strong{font-weight:500;color:var(--ink)}
+.bar-bg{height:5px;background:var(--cream3);border-radius:0;overflow:hidden}
+.bar-fg{height:5px;border-radius:0;transition:width 1.2s cubic-bezier(0.16,1,0.3,1)}
+.bar-fg.lulus{background:var(--navy)}
+.bar-fg.tidak{background:var(--red)}
+.rp-foot{padding:12px 22px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--cream4);}
+.rp-timestamp{font-size:10px;color:var(--ink4);font-family:'DM Mono',monospace}
+.btn-reset{background:none;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3);padding:7px 16px;border-radius:var(--r);cursor:pointer;transition:all .15s;}
+.btn-reset:hover{color:var(--navy);border-color:var(--navy)}
+
+/* rp-detail breakdown */
+.rp-breakdown{margin-top:14px;border:1px solid var(--border2);border-radius:var(--r);overflow:hidden}
+.rb-head{padding:8px 14px;background:var(--cream2);font-size:9px;letter-spacing:0.09em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.rb-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--border2)}
+.rb-lbl{font-size:11px;color:var(--ink2);min-width:90px}
+.rb-track{flex:1;height:6px;background:var(--cream3);border-radius:0;overflow:hidden}
+.rb-fill{height:6px;border-radius:0;transition:width .8s .3s cubic-bezier(0.16,1,0.3,1)}
+.rb-pct{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink2);min-width:40px;text-align:right}
+.rb-contrib{font-size:10px;color:var(--ink3);min-width:60px;text-align:right}
+
+/* recommendation box */
+.rp-recommendation{margin-top:12px;padding:12px 16px;border-radius:var(--r);font-size:12px;line-height:1.7}
+.rp-recommendation.lulus{background:var(--green3);border:1px solid #A8DCC0;color:var(--green)}
+.rp-recommendation.tidak{background:var(--red3);border:1px solid var(--red4);color:var(--red2)}
+.rp-recommendation strong{display:block;margin-bottom:3px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase}
+
+/* sidebar */
+.side-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);padding:16px;}
+.side-card-title{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold4);margin-bottom:12px;font-weight:600;}
+.side-row{display:flex;gap:10px;font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:8px;line-height:1.5;}
+.side-row:last-child{margin-bottom:0}
+.side-row::before{content:'—';color:var(--gold4);flex-shrink:0;opacity:.6}
+.side-divider{height:1px;background:rgba(255,255,255,0.07);margin:4px 0}
+.engine-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:5px 12px;color:rgba(255,255,255,0.6);margin-top:4px;}
+.engine-dot{width:6px;height:6px;border-radius:50%;background:#4AC47A}
+
+/* ── RIWAYAT ── */
+.hist-layout{padding:32px 28px}
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:28px;}
+.stat-card{background:var(--cream);padding:20px 18px}
+.stat-card-val{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;color:var(--navy);line-height:1;}
+.stat-card-val span{color:var(--gold)}
+.stat-card-lbl{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-top:4px}
+.hist-table-wrap{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.hist-head{display:grid;grid-template-columns:36px 1fr 80px 80px 80px;gap:0;padding:10px 16px;background:var(--cream2);border-bottom:1px solid var(--border);}
+.hist-head-cell{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);font-weight:600;}
+.hist-head-cell:last-child{text-align:right}
+.hist-row{display:grid;grid-template-columns:36px 1fr 80px 80px 80px;gap:0;padding:14px 16px;align-items:center;border-bottom:1px solid var(--border2);transition:background .1s;cursor:pointer;}
+.hist-row:last-child{border-bottom:none}
+.hist-row:hover{background:var(--cream4)}
+.hr-idx{font-size:11px;color:var(--ink3);font-family:'DM Mono',monospace}
+.hr-name{font-size:13px;font-weight:500;color:var(--ink)}
+.hr-meta{font-size:10px;color:var(--ink3);margin-top:1px}
+.hr-conf{font-size:12px;color:var(--ink2);font-family:'DM Mono',monospace}
+.hr-time{font-size:10px;color:var(--ink3);font-family:'DM Mono',monospace}
+.badge{display:inline-flex;align-items:center;font-size:10px;letter-spacing:0.05em;text-transform:uppercase;padding:4px 11px;border-radius:99px;font-weight:600;}
+.badge.lulus{background:var(--sky3);color:var(--sky2)}
+.badge.tidak{background:var(--red3);color:var(--red2)}
+.hist-empty{padding:3rem;text-align:center;color:var(--ink3);font-size:13px;}
+.hist-actions{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.hist-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--ink)}
+.btn-clear{background:none;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3);padding:8px 16px;border-radius:var(--r);cursor:pointer;transition:all .15s;}
+.btn-clear:hover{color:var(--red);border-color:var(--red)}
+.sem-tabs{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:var(--r);padding:4px;background:var(--cream2);flex-shrink:0;}
+.sem-tab{background:none;border:none;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);padding:6px 14px;border-radius:var(--r);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.sem-tab:hover{color:var(--ink);background:var(--cream)}
+.sem-tab.active{background:var(--navy);color:#fff;font-weight:600;}
+.sem-empty-hint{font-size:11px;color:var(--ink3);padding:6px 12px;background:var(--gold3);border:1px solid var(--gold5);border-radius:var(--r);display:none;margin-bottom:12px;}
+.sem-empty-hint.show{display:block}
+.sem-stat-label{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink4);margin-top:2px;}
+
+/* ── TENTANG ── */
+.about-layout{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border)}
+.about-col{padding:32px 28px;border-right:1px solid var(--border)}
+.about-col:last-child{border-right:none}
+.about-h3{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:300;color:var(--ink);margin-bottom:16px;line-height:1.25;}
+.about-h3 em{font-style:italic;color:var(--navy)}
+.about-col p{font-size:12px;color:var(--ink3);line-height:1.85;margin-bottom:12px}
+.tech-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;margin-bottom:16px}
+.tech-tag{font-size:10px;letter-spacing:0.05em;text-transform:uppercase;background:var(--navy);color:var(--gold4);border-radius:var(--r);padding:5px 12px;font-weight:600;}
+.api-snippet{background:var(--ink);border-radius:var(--r);padding:16px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6);line-height:1.9;margin-top:16px;}
+.api-snippet .method{color:var(--gold4)}
+.api-snippet .key{color:#9FE1CB}
+.api-snippet .val{color:#A8D8FF}
+.feat-list{list-style:none;margin-top:8px}
+.feat-list li{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border2);font-size:12px;color:var(--ink2);line-height:1.6;}
+.feat-list li:last-child{border-bottom:none}
+.feat-list li::before{content:'—';color:var(--gold);flex-shrink:0;margin-top:1px}
+.output-box{background:var(--sky4);border:1px solid #B8D8EA;border-radius:var(--r);padding:16px;margin-top:20px;}
+.output-box .out-title{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--sky2);margin-bottom:8px;font-weight:600;}
+.output-box p{font-size:12px;color:var(--navy);line-height:1.7}
+
+/* ── STATISTIK ── */
+.stats-layout{padding:28px}
+.stats-page-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.stats-page-sub{font-size:12px;color:var(--ink3);margin-bottom:24px}
+.stats-kpi{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px;}
+.kpi-card{background:var(--cream);padding:18px 16px}
+.kpi-val{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:600;line-height:1;color:var(--navy);}
+.kpi-val.gold{color:var(--gold)}
+.kpi-val.green{color:var(--green)}
+.kpi-val.red{color:var(--red)}
+.kpi-val.sky{color:var(--sky2)}
+.kpi-lbl{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-top:6px}
+.kpi-trend{font-size:12px;color:var(--ink3);margin-top:4px}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.chart-card{background:var(--cream);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.chart-card-head{padding:14px 18px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
+.chart-card-title{font-size:12px;font-weight:600;color:var(--ink)}
+.chart-card-sub{font-size:10px;color:var(--ink3);margin-top:2px}
+.chart-card-body{padding:20px 22px}
+.donut-wrap{display:flex;align-items:center;gap:24px;padding:8px 0}
+.donut-svg{flex-shrink:0}
+.donut-legend{display:flex;flex-direction:column;gap:8px}
+.donut-legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2)}
+.donut-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.hbar-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.hbar-row:last-child{margin-bottom:0}
+.hbar-label{font-size:13px;color:var(--ink2);min-width:56px;text-align:right;font-weight:500}
+.hbar-track{flex:1;height:20px;background:var(--cream2);border-radius:0;overflow:hidden;border:1px solid var(--border2)}
+.hbar-fill{height:20px;border-radius:0;transition:width .8s cubic-bezier(0.16,1,0.3,1)}
+.hbar-val{font-size:13px;font-family:'DM Mono',monospace;color:var(--ink2);min-width:36px;font-weight:600}
+.dist-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.dist-row:last-child{margin-bottom:0}
+.dist-range{font-size:12px;font-family:'DM Mono',monospace;color:var(--ink3);min-width:60px}
+.dist-bar-wrap{flex:1;height:18px;background:var(--cream2);border-radius:0;overflow:hidden;border:1px solid var(--border2)}
+.dist-bar{height:18px;border-radius:0;transition:width .7s cubic-bezier(0.16,1,0.3,1)}
+.dist-count{font-size:13px;font-family:'DM Mono',monospace;color:var(--ink2);min-width:28px;text-align:right;font-weight:600}
+.no-data{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;color:var(--ink3);font-size:12px;gap:8px;text-align:center;}
+.no-data svg{opacity:.3}
+
+/* ── MODAL ── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:9998;opacity:0;transition:opacity .2s;pointer-events:none;}
+.modal-backdrop.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--cream);border:1px solid var(--border);border-radius:var(--r);width:440px;max-width:94vw;overflow:hidden;transform:translateY(12px) scale(0.98);transition:transform .2s,opacity .2s;opacity:0;}
+.modal-backdrop.open .modal-box{transform:translateY(0) scale(1);opacity:1}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.modal-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;font-family:'Cormorant Garamond',serif}
+.modal-avatar.lulus{background:var(--sky3);color:var(--sky2)}
+.modal-avatar.tidak{background:var(--red3);color:var(--red2)}
+.modal-title{font-size:15px;font-weight:500;color:var(--ink)}
+.modal-subtitle{font-size:11px;color:var(--ink3);margin-top:2px}
+.modal-close-btn{background:none;border:1px solid var(--border);border-radius:var(--r);width:28px;height:28px;cursor:pointer;font-size:16px;color:var(--ink3);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.modal-close-btn:hover{color:var(--ink);border-color:var(--ink)}
+.modal-status{padding:10px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-status-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink3)}
+.modal-body{padding:16px 20px}
+.modal-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.modal-metric{background:var(--cream);padding:12px 8px;text-align:center}
+.modal-metric-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;display:block;line-height:1}
+.modal-metric-val.lulus{color:var(--navy)}
+.modal-metric-val.tidak{color:var(--red2)}
+.modal-metric-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);margin-top:3px}
+.modal-conf-row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink3);margin-bottom:6px}
+.modal-conf-row strong{font-weight:500;color:var(--ink)}
+.modal-info-table{width:100%;border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-top:14px;border-collapse:collapse}
+.modal-info-table td{padding:9px 14px;font-size:12px;border-bottom:1px solid var(--border2)}
+.modal-info-table tr:last-child td{border-bottom:none}
+.modal-info-table td:first-child{color:var(--ink3);width:45%}
+.modal-info-table td:last-child{font-family:'DM Mono',monospace;font-weight:500;color:var(--ink)}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border);background:var(--cream4);display:flex;justify-content:flex-end}
+
+/* ── FOOTER ── */
+.footer{background:var(--navy2);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.06);}
+.footer p{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.06em;text-transform:uppercase}
+.footer .accent{color:var(--gold4)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr}
+  .hero-left{border-right:none;border-bottom:1px solid var(--border)}
+  .pred-layout{grid-template-columns:1fr}
+  .pred-form{border-right:none;border-bottom:1px solid var(--border)}
+  .feat-section{grid-template-columns:1fr 1fr}
+  .about-layout{grid-template-columns:1fr}
+  .about-col{border-right:none;border-bottom:1px solid var(--border)}
+  .how-section{grid-template-columns:1fr}
+  .how-label{border-right:none;border-bottom:1px solid var(--border)}
+  .stat-cards{grid-template-columns:1fr 1fr}
+  .stats-kpi{grid-template-columns:repeat(3,1fr)}
+  .charts-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .nav{padding:0 16px}
+  .nav-links{display:none}
+  .nav-ham{display:flex}
+  .hero-left,.hero-right{padding:22px 18px}
+  .hero-right{display:none}
+  .how-steps{grid-template-columns:1fr}
+  .feat-section{grid-template-columns:1fr}
+  .f-grid{grid-template-columns:1fr}
+  .rp-metrics{grid-template-columns:1fr 1fr}
+  .hist-layout{padding:20px 16px}
+  .hist-head,.hist-row{grid-template-columns:28px 1fr auto auto}
+  .hist-head-cell.col-conf,.hr-conf{display:none}
+  .cta-bar{flex-direction:column;align-items:flex-start;gap:12px}
+  .stripe{padding:10px 18px}
+  .pred-form{padding:22px 16px}
+  .about-col{padding:22px 16px}
+  .stats-layout{padding:20px 16px}
+}
+@media(max-width:480px){
+  .stat-cards{grid-template-columns:1fr}
+  .hist-head,.hist-row{grid-template-columns:28px 1fr auto}
+  .hist-head-cell.col-time,.hr-time{display:none}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .footer{flex-direction:column;gap:6px;text-align:center}
+  .hero-h1{font-size:2.4rem}
+  .pred-form{padding:18px 14px}
+  .stats-kpi{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav">
+  <div class="nav-brand" onclick="showPage('home')">
+    <div class="nav-logo">
+      <span class="nav-logo-fb">S</span>
+    </div>
+    <div class="nav-title">
+      <div class="t1">SMKN Pasirian</div>
+      <div class="t2">Sistem Prediksi Akademik</div>
+    </div>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <button class="nav-btn active" id="nb-home"      onclick="showPage('home')">Beranda</button>
+    <button class="nav-btn"        id="nb-prediksi"  onclick="showPage('prediksi')">Prediksi</button>
+    <button class="nav-btn"        id="nb-riwayat"   onclick="showPage('riwayat')">Riwayat</button>
+    <button class="nav-btn"        id="nb-statistik" onclick="showPage('statistik')">Statistik</button>
+    <button class="nav-btn"        id="nb-tentang"   onclick="showPage('tentang')">Tentang</button>
+    <button class="nav-btn nav-cta" onclick="showPage('prediksi')">Coba Sekarang</button>
+  </div>
+  <button class="nav-ham" id="navHam" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-mobile" id="navMobile">
+  <button class="nav-btn" onclick="showPage('home');closeMobileMenu()">Beranda</button>
+  <button class="nav-btn" onclick="showPage('prediksi');closeMobileMenu()">Prediksi</button>
+  <button class="nav-btn" onclick="showPage('riwayat');closeMobileMenu()">Riwayat</button>
+  <button class="nav-btn" onclick="showPage('statistik');closeMobileMenu()">Statistik</button>
+  <button class="nav-btn" onclick="showPage('tentang');closeMobileMenu()">Tentang</button>
+</div>
+
+<!-- ══ PAGE: HOME ══ -->
+<div id="pg-home" class="page active">
+  <div class="hero">
+    <div class="hero-left">
+      <div>
+        <div class="eyebrow">Widya Margatama — SMK Negeri Pasirian</div>
+        <h1 class="hero-h1"><strong>Prediksi</strong><em>Kelulusan</em><strong>Siswa</strong></h1>
+        <p class="hero-sub">Sistem analisis akademik berbasis model JavaScript untuk mendukung pengambilan keputusan kenaikan kelas siswa SMK Negeri Pasirian secara cepat, akurat, dan real-time — tanpa server eksternal.</p>
+      </div>
+      <div>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="showPage('prediksi')">Mulai Prediksi</button>
+          <button class="btn-outline" onclick="showPage('tentang')">Tentang Sistem</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="school-card">
+        <div class="school-logo"><span class="school-logo-fb">S</span></div>
+        <div class="school-name">SMK Negeri Pasirian</div>
+        <div class="school-sub">Widya Margatama</div>
+        <div class="status-badge"><span class="status-dot"></span> Sistem aktif</div>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-val" id="hs-total">0</div><div class="hstat-lbl">Diprediksi</div></div>
+        <div class="hstat"><div class="hstat-val" id="hs-rate">—</div><div class="hstat-lbl">% Lulus</div></div>
+        <div class="hstat"><div class="hstat-val">JS</div><div class="hstat-lbl">Engine</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="stripe">
+    <div class="stripe-item">Pure JavaScript Engine</div>
+    <div class="stripe-item">Weighted Scoring Model</div>
+    <div class="stripe-item">Tanpa Server Eksternal</div>
+    <div class="stripe-item">4 Fitur Akademik</div>
+    <div class="stripe-item">Confidence Score Real-time</div>
+    <div class="stripe-item">Rekomendasi Intervensi</div>
+  </div>
+  <div class="how-section">
+    <div class="how-label">
+      <h3>Cara<br><em>kerja</em><br>sistem</h3>
+      <p>Empat langkah dari input data hingga prediksi keluar dengan tingkat keyakinan sistem.</p>
+    </div>
+    <div class="how-steps">
+      <div class="how-step"><div class="step-num">01</div><div class="step-text"><h4>Input data siswa</h4><p>Masukkan nilai rata-rata, kehadiran, tugas, dan nilai ujian akhir siswa</p></div></div>
+      <div class="how-step"><div class="step-num">02</div><div class="step-text"><h4>Kalkulasi JavaScript</h4><p>Model JS menghitung skor gabungan berbobot dari 4 komponen akademik</p></div></div>
+      <div class="how-step"><div class="step-num">03</div><div class="step-text"><h4>Evaluasi threshold</h4><p>Skor dibandingkan dengan ambang batas kelulusan dan faktor risiko</p></div></div>
+      <div class="how-step"><div class="step-num">04</div><div class="step-text"><h4>Hasil & rekomendasi</h4><p>Status lulus/tidak, keyakinan, dan rekomendasi intervensi ditampilkan</p></div></div>
+    </div>
+  </div>
+  <div class="feat-section">
+    <div class="feat-col"><div class="feat-icon">⚡</div><h4>Pure JS Engine</h4><p>Prediksi berjalan 100% di browser, tanpa koneksi ke server manapun — cepat dan offline-ready.</p></div>
+    <div class="feat-col"><div class="feat-icon">📊</div><h4>Confidence Score</h4><p>Tingkat keyakinan dihitung dari distribusi skor terhadap ambang batas kelulusan.</p></div>
+    <div class="feat-col"><div class="feat-icon">💡</div><h4>Rekomendasi Aksi</h4><p>Sistem memberikan rekomendasi intervensi spesifik berdasarkan kelemahan akademik yang terdeteksi.</p></div>
+    <div class="feat-col"><div class="feat-icon">🕐</div><h4>Riwayat & Statistik</h4><p>Semua prediksi tersimpan dengan statistik visual lengkap selama sesi browser aktif.</p></div>
+  </div>
+  <div class="cta-bar">
+    <p>Siap menganalisis data siswa? Mulai prediksi sekarang — gratis, cepat, dan tanpa server.</p>
+    <button onclick="showPage('prediksi')">Mulai Prediksi →</button>
+  </div>
+  <div class="footer">
+    <p class="accent">SMK Negeri Pasirian</p>
+    <p>Sistem Prediksi Akademik · Pure JavaScript Engine</p>
+  </div>
+</div>
+
+<!-- ══ PAGE: PREDIKSI ══ -->
+<div id="pg-prediksi" class="page">
+  <div class="pred-layout">
+    <div class="pred-form">
+
+      <div class="sec-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Identitas Siswa
+      </div>
+      <div class="f-grid">
+        <div class="f-field" id="ff-nama">
+          <label class="f-label" for="p-nama">Nama lengkap <span style="color:var(--red)">*</span></label>
+          <input class="f-input" id="p-nama" type="text" placeholder="Budi Santoso" autocomplete="off">
+          <div class="f-error">Nama wajib diisi</div>
+        </div>
+        <div class="f-field">
+          <label class="f-label" for="p-kelas">Kelas</label>
+          <input class="f-input" id="p-kelas" type="text" placeholder="X TKJ 1">
+        </div>
+      </div>
+      <div class="f-grid">
+        <div class="f-field">
+          <label class="f-label" for="p-jurusan">Jurusan</label>
+          <input class="f-input" id="p-jurusan" type="text" placeholder="Teknik Komputer Jaringan">
+        </div>
+        <div class="f-field">
+          <label class="f-label" for="p-smt">Semester</label>
+          <input class="f-input" id="p-smt" type="text" placeholder="Genap 2024/2025">
+        </div>
+      </div>
+
+      <div class="sec-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Data Akademik
+      </div>
+
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <span class="slider-label">Nilai rata-rata (0–100)</span>
+          <span class="slider-val" id="v-nilai">75</span>
+        </div>
+        <input type="range" id="p-nilai" min="0" max="100" value="75" step="1" oninput="updateSlider('nilai',this.value)">
+        <div class="slider-markers"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+      </div>
+
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <span class="slider-label">Kehadiran (%)</span>
+          <span class="slider-val" id="v-hadir">85%</span>
+        </div>
+        <input type="range" id="p-hadir" min="0" max="100" value="85" step="1" oninput="updateSlider('hadir',this.value,'%')">
+        <div class="slider-markers"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+      </div>
+
+      <div class="f-grid">
+        <div class="slider-wrap">
+          <div class="slider-top">
+            <span class="slider-label">Tugas selesai (0–100)</span>
+            <span class="slider-val" id="v-tugas">80</span>
+          </div>
+          <input type="range" id="p-tugas" min="0" max="100" value="80" step="1" oninput="updateSlider('tugas',this.value)">
+          <div class="slider-markers"><span>0</span><span>50</span><span>100</span></div>
+        </div>
+        <div class="slider-wrap">
+          <div class="slider-top">
+            <span class="slider-label">Nilai ujian akhir (0–100)</span>
+            <span class="slider-val" id="v-ujian">78</span>
+          </div>
+          <input type="range" id="p-ujian" min="0" max="100" value="78" step="1" oninput="updateSlider('ujian',this.value)">
+          <div class="slider-markers"><span>0</span><span>50</span><span>100</span></div>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btnSubmit" onclick="doPredict()">
+        <svg id="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+        <span id="btn-text">Analisis Sekarang</span>
+      </button>
+
+      <!-- RESULT PANEL -->
+      <div class="result-panel" id="resultPanel">
+        <div class="rp-head" id="rp-head">
+          <div class="rp-tag" id="rp-tag"></div>
+          <div class="rp-status" id="rp-status"></div>
+        </div>
+        <div class="rp-body">
+          <div class="rp-metrics">
+            <div class="rpm"><span class="rpm-val" id="rm-nilai">—</span><span class="rpm-lbl">Nilai</span></div>
+            <div class="rpm"><span class="rpm-val" id="rm-hadir">—</span><span class="rpm-lbl">Hadir</span></div>
+            <div class="rpm"><span class="rpm-val" id="rm-tugas">—</span><span class="rpm-lbl">Tugas</span></div>
+            <div class="rpm"><span class="rpm-val" id="rm-ujian">—</span><span class="rpm-lbl">Ujian</span></div>
+          </div>
+
+          <!-- Breakdown bobot -->
+          <div class="rp-breakdown">
+            <div class="rb-head">Kontribusi per komponen</div>
+            <div class="rb-row" id="rb-nilai"></div>
+            <div class="rb-row" id="rb-hadir"></div>
+            <div class="rb-row" id="rb-tugas"></div>
+            <div class="rb-row" id="rb-ujian"></div>
+          </div>
+
+          <div style="margin-top:14px">
+            <div class="conf-row">
+              <span>Tingkat keyakinan model</span>
+              <strong id="r-pct">—</strong>
+            </div>
+            <div class="bar-bg"><div class="bar-fg" id="r-bar" style="width:0%"></div></div>
+          </div>
+
+          <!-- Rekomendasi -->
+          <div class="rp-recommendation" id="rp-recommendation"></div>
+        </div>
+        <div class="rp-foot">
+          <span class="rp-timestamp" id="r-time">—</span>
+          <button class="btn-reset" onclick="resetForm()">↺ Prediksi siswa lain</button>
+        </div>
+      </div>
+
+    </div><!-- /pred-form -->
+
+    <!-- SIDEBAR -->
+    <div class="pred-side">
+      <div class="side-card">
+        <div class="side-card-title">Status Engine</div>
+        <div class="engine-badge"><span class="engine-dot"></span> JavaScript Engine aktif</div>
+        <div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,0.35);line-height:1.6">Prediksi berjalan 100% di browser — tidak memerlukan server Java, Python, atau koneksi internet.</div>
+      </div>
+      <div class="side-card">
+        <div class="side-card-title">Bobot Fitur Model</div>
+        <div class="side-row">Nilai rata-rata — 30%</div>
+        <div class="side-row">Kehadiran — 25%</div>
+        <div class="side-row">Ujian akhir — 25%</div>
+        <div class="side-row">Tugas selesai — 20%</div>
+      </div>
+      <div class="side-card">
+        <div class="side-card-title">Kriteria Kelulusan</div>
+        <div class="side-row">Skor gabungan ≥ 60 diprediksi lulus</div>
+        <div class="side-row">Kehadiran di bawah 75% otomatis berisiko</div>
+        <div class="side-row">Nilai ujian merupakan faktor kritis</div>
+      </div>
+      <div class="side-card" id="preview-card">
+        <div class="side-card-title">Preview Nilai Saat Ini</div>
+        <div class="side-row" id="prev-nilai">Nilai: 75</div>
+        <div class="side-row" id="prev-hadir">Hadir: 85%</div>
+        <div class="side-row" id="prev-tugas">Tugas: 80</div>
+        <div class="side-row" id="prev-ujian">Ujian: 78</div>
+        <div class="side-divider"></div>
+        <div class="side-row" id="prev-est">Estimasi: menghitung...</div>
+      </div>
+      <div class="side-card">
+        <div class="side-card-title">SMKN Pasirian</div>
+        <div class="side-row">Widya Margatama</div>
+        <div class="side-row">Model dijalankan langsung di browser siswa</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: RIWAYAT ══ -->
+<div id="pg-riwayat" class="page">
+  <div class="hist-layout">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-card-val" id="st-total">0</div><div class="stat-card-lbl">Total Prediksi</div></div>
+      <div class="stat-card"><div class="stat-card-val" id="st-lulus"><span>0</span></div><div class="stat-card-lbl">Lulus / Naik Kelas</div></div>
+      <div class="stat-card"><div class="stat-card-val" id="st-tidak">0</div><div class="stat-card-lbl">Tidak Lulus</div></div>
+      <div class="stat-card"><div class="stat-card-val" id="st-rate">—</div><div class="stat-card-lbl">Tingkat Kelulusan</div></div>
+    </div>
+    <div class="hist-actions">
+      <div class="hist-title">Riwayat Prediksi</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="sem-tabs">
+          <button class="sem-tab active" id="tab-all"    onclick="setSemTab('all')">Semua</button>
+          <button class="sem-tab"        id="tab-genap"  onclick="setSemTab('genap')">Genap</button>
+          <button class="sem-tab"        id="tab-ganjil" onclick="setSemTab('ganjil')">Ganjil</button>
+        </div>
+        <button class="btn-clear" onclick="clearHistory()">Hapus Semua</button>
+      </div>
+    </div>
+    <div class="sem-empty-hint" id="sem-empty-hint"></div>
+    <div class="hist-table-wrap" id="hist-wrap">
+      <div class="hist-head">
+        <div class="hist-head-cell">#</div>
+        <div class="hist-head-cell">Siswa</div>
+        <div class="hist-head-cell col-conf">Keyakinan</div>
+        <div class="hist-head-cell col-time">Waktu</div>
+        <div class="hist-head-cell" style="text-align:right">Status</div>
+      </div>
+      <div id="hist-list"></div>
+    </div>
+  </div>
+  <div class="footer">
+    <p class="accent">SMK Negeri Pasirian</p>
+    <p>Riwayat tersimpan selama sesi browser aktif</p>
+  </div>
+</div>
+
+<!-- ══ PAGE: STATISTIK ══ -->
+<div id="pg-statistik" class="page">
+  <div class="stats-layout">
+    <div class="stats-page-title">Statistik Prediksi</div>
+    <div class="stats-page-sub" id="stats-sub">Memuat data...</div>
+    <div class="stats-kpi">
+      <div class="kpi-card"><div class="kpi-val" id="kpi-total">0</div><div class="kpi-lbl">Total Prediksi</div></div>
+      <div class="kpi-card"><div class="kpi-val green" id="kpi-lulus">0</div><div class="kpi-lbl">Lulus</div><div class="kpi-trend" id="kpi-lulus-pct">—</div></div>
+      <div class="kpi-card"><div class="kpi-val red" id="kpi-tidak">0</div><div class="kpi-lbl">Tidak Lulus</div><div class="kpi-trend" id="kpi-tidak-pct">—</div></div>
+      <div class="kpi-card"><div class="kpi-val gold" id="kpi-avgconf">—</div><div class="kpi-lbl">Rata-rata Keyakinan</div></div>
+      <div class="kpi-card"><div class="kpi-val sky" id="kpi-avgnilai">—</div><div class="kpi-lbl">Rata-rata Nilai</div></div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-head"><div><div class="chart-card-title">Proporsi Kelulusan</div><div class="chart-card-sub">Lulus vs Tidak Lulus</div></div></div>
+        <div class="chart-card-body"><div id="chart-donut-wrap" class="no-data"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Belum ada data prediksi</div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-head"><div><div class="chart-card-title">Distribusi Nilai Rata-rata</div><div class="chart-card-sub">Sebaran nilai siswa yang diprediksi</div></div></div>
+        <div class="chart-card-body"><div id="chart-dist-wrap" class="no-data"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Belum ada data prediksi</div></div>
+      </div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-head"><div><div class="chart-card-title">Rata-rata Komponen Akademik</div><div class="chart-card-sub">Nilai, Hadir, Tugas, Ujian</div></div></div>
+        <div class="chart-card-body"><div id="chart-komponen-wrap" class="no-data"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Belum ada data prediksi</div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-head"><div><div class="chart-card-title">Distribusi Keyakinan Model</div><div class="chart-card-sub">Jumlah prediksi per rentang keyakinan</div></div></div>
+        <div class="chart-card-body"><div id="chart-conf-wrap" class="no-data"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Belum ada data prediksi</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p class="accent">SMK Negeri Pasirian</p>
+    <p>Statistik diperbarui otomatis setiap prediksi baru</p>
+  </div>
+</div>
+
+<!-- ══ PAGE: TENTANG ══ -->
+<div id="pg-tentang" class="page">
+  <div class="about-layout">
+    <div class="about-col">
+      <h3 class="about-h3">Tentang <em>sistem</em><br>prediksi ini</h3>
+      <p>EduPredict SMKN Pasirian adalah sistem prediksi kelulusan siswa berbasis JavaScript murni yang berjalan sepenuhnya di browser — tanpa server Java, Python, atau koneksi internet.</p>
+      <p>Model menggunakan weighted scoring dengan empat komponen akademik. Skor gabungan dibandingkan dengan ambang batas kelulusan untuk menghasilkan prediksi beserta tingkat keyakinan.</p>
+      <p>Arsitektur ini memastikan sistem dapat berjalan offline, cepat, dan mudah di-deploy hanya dengan satu file HTML.</p>
+      <div class="tech-tags">
+        <span class="tech-tag">Vanilla JS</span>
+        <span class="tech-tag">Weighted Scoring</span>
+        <span class="tech-tag">Pure HTML/CSS</span>
+        <span class="tech-tag">Offline Ready</span>
+      </div>
+      <div class="api-snippet">
+        <span class="method">// Fungsi prediksi JavaScript</span><br>
+        <span class="key">function</span> <span class="val">predict</span>(n, h, t, u) {<br>
+        &nbsp;&nbsp;<span class="key">var</span> score = n*<span class="val">0.30</span> + h*<span class="val">0.25</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ t*<span class="val">0.20</span> + u*<span class="val">0.25</span>;<br>
+        &nbsp;&nbsp;<span class="key">var</span> lulus = score >= <span class="val">60</span>;<br>
+        &nbsp;&nbsp;<span class="key">var</span> conf = calcConf(score, lulus);<br>
+        &nbsp;&nbsp;<span class="key">return</span> { lulus, score, conf };<br>
+        }
+      </div>
+    </div>
+    <div class="about-col">
+      <h3 class="about-h3">Fitur <em>input</em><br>model prediksi</h3>
+      <ul class="feat-list">
+        <li><div><strong>nilai_rata</strong> — bobot 30%<br><span style="color:var(--ink3);font-size:11px">Nilai rata-rata seluruh mata pelajaran semester berjalan</span></div></li>
+        <li><div><strong>kehadiran</strong> — bobot 25%<br><span style="color:var(--ink3);font-size:11px">Persentase kehadiran siswa (0–100%). Di bawah 75% otomatis diklasifikasikan berisiko</span></div></li>
+        <li><div><strong>tugas</strong> — bobot 20%<br><span style="color:var(--ink3);font-size:11px">Jumlah atau persentase tugas yang diselesaikan</span></div></li>
+        <li><div><strong>ujian</strong> — bobot 25%<br><span style="color:var(--ink3);font-size:11px">Nilai ujian akhir semester sebagai faktor kritis</span></div></li>
+      </ul>
+      <div class="output-box">
+        <div class="out-title">Output Model</div>
+        <p><strong>lulus</strong> → true/false — hasil klasifikasi<br><strong>score</strong> → skor gabungan berbobot (0–100)<br><strong>confidence</strong> → tingkat keyakinan berdasarkan jarak dari ambang batas<br><strong>rekomendasi</strong> → saran intervensi spesifik per komponen lemah</p>
+      </div>
+      <div style="margin-top:16px;padding:16px;background:var(--cream2);border:1px solid var(--border2);border-radius:var(--r)">
+        <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;font-weight:600">Alur Prediksi</div>
+        <div style="font-size:12px;color:var(--ink2);line-height:2;font-family:'DM Mono',monospace">
+          Input (slider) → JS Engine<br>
+          Weighted Score (0–100)<br>
+          Threshold Check (≥60?)<br>
+          Confidence Calculation<br>
+          Weakness Detection → Rekomendasi
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p class="accent">SMK Negeri Pasirian · Widya Margatama</p>
+    <p>Sistem Prediksi Akademik · Pure JavaScript Engine · Offline Ready</p>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="modal-avatar" id="modal-avatar"></div>
+        <div>
+          <div class="modal-title" id="modal-student-name"></div>
+          <div class="modal-subtitle" id="modal-student-sub"></div>
+        </div>
+      </div>
+      <button class="modal-close-btn" onclick="closeStudentModal()">×</button>
+    </div>
+    <div class="modal-status" id="modal-status-bar">
+      <span class="modal-status-lbl">Hasil prediksi</span>
+      <span id="modal-status-badge"></span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-metrics" id="modal-metrics"></div>
+      <div class="modal-conf-row">
+        <span>Tingkat keyakinan model</span>
+        <strong id="modal-conf-pct"></strong>
+      </div>
+      <div class="bar-bg"><div class="bar-fg" id="modal-conf-bar" style="width:0%"></div></div>
+      <table class="modal-info-table" id="modal-info-table"></table>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-reset" onclick="closeStudentModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-wrap"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   PREDICTION ENGINE (Pure JavaScript)
+   ═══════════════════════════════════════════ */
+
+var WEIGHTS = { nilai: 0.30, hadir: 0.25, tugas: 0.20, ujian: 0.25 };
+var THRESHOLD = 60;       // skor gabungan minimal lulus
+var HADIR_MIN = 75;       // kehadiran minimum (risiko otomatis)
+var NILAI_MIN = 55;       // nilai minimum tiap komponen
+var UJIAN_MIN = 55;       // nilai ujian minimum
+
+/**
+ * Hitung skor gabungan berbobot
+ */
+function calcScore(n, h, t, u) {
+  return (n * WEIGHTS.nilai) + (h * WEIGHTS.hadir) +
+         (t * WEIGHTS.tugas) + (u * WEIGHTS.ujian);
+}
+
+/**
+ * Hitung confidence (0–100)
+ * Berdasarkan jarak skor dari threshold, dinormalisasi ke 0–100
+ */
+function calcConfidence(score, lulus) {
+  var dist = Math.abs(score - THRESHOLD);
+  // Makin jauh dari threshold → makin yakin
+  // Jarak max ~40 poin (skor 100 atau 20), map ke confidence 50–99%
+  var base = 50 + Math.min(dist * 1.25, 49);
+  // Bulatkan ke 1 desimal
+  return Math.round(base * 10) / 10;
+}
+
+/**
+ * Deteksi komponen lemah dan buat rekomendasi
+ */
+function buildRecommendation(n, h, t, u, lulus) {
+  var issues = [];
+
+  if (h < HADIR_MIN) issues.push('kehadiran di bawah ' + HADIR_MIN + '% (' + h + '%)');
+  if (u < UJIAN_MIN) issues.push('nilai ujian di bawah ambang batas (' + u + ')');
+  if (n < NILAI_MIN) issues.push('nilai rata-rata perlu ditingkatkan (' + n + ')');
+  if (t < 60)        issues.push('penyelesaian tugas rendah (' + t + ')');
+
+  if (lulus) {
+    if (issues.length === 0) {
+      return { type: 'lulus', msg: 'Performa akademik siswa ini sangat baik. Pertahankan konsistensi nilai dan kehadiran untuk semester berikutnya.' };
+    } else {
+      return { type: 'lulus', msg: 'Diprediksi lulus, namun perhatikan: ' + issues.join('; ') + '. Perlu pemantauan lebih lanjut.' };
+    }
+  } else {
+    if (issues.length === 0) {
+      return { type: 'tidak', msg: 'Skor gabungan berada di bawah ambang batas. Evaluasi menyeluruh terhadap semua komponen akademik diperlukan.' };
+    } else {
+      return { type: 'tidak', msg: 'Faktor risiko terdeteksi: ' + issues.join('; ') + '. Rekomendasikan program remedial dan konseling akademik.' };
+    }
+  }
+}
+
+/**
+ * Fungsi prediksi utama — menggantikan panggilan ke Java/Python API
+ */
+function predictJS(n, h, t, u) {
+  var score   = calcScore(n, h, t, u);
+  var hadir_risk = h < HADIR_MIN;
+  var ujian_risk = u < UJIAN_MIN;
+
+  // Override: jika ada risiko kritis, bisa turun kelas meski skor hampir cukup
+  var lulus = (score >= THRESHOLD) && !hadir_risk || (score >= 70 && !ujian_risk && !hadir_risk);
+  // Logika gabungan yang lebih robust:
+  if (score < 50) lulus = false;
+  if (hadir_risk && score < 65) lulus = false;
+  if (ujian_risk && score < 63) lulus = false;
+  if (score >= 75) lulus = true; // skor tinggi = pasti lulus
+
+  var conf    = calcConfidence(score, lulus);
+  var rec     = buildRecommendation(n, h, t, u, lulus);
+
+  // Kontribusi tiap komponen ke skor total
+  var contribs = {
+    nilai: (n * WEIGHTS.nilai),
+    hadir: (h * WEIGHTS.hadir),
+    tugas: (t * WEIGHTS.tugas),
+    ujian: (u * WEIGHTS.ujian)
+  };
+
+  return {
+    hasil:    lulus ? 1 : 0,
+    akurasi:  conf,
+    score:    Math.round(score * 10) / 10,
+    lulus:    lulus,
+    contribs: contribs,
+    rec:      rec
+  };
+}
+
+/* ═══════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════ */
+var history_data = [];
+var currentPage  = 'home';
+var activeSemTab = 'all';
+
+/* ═══════════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════════ */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('pg-' + id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  var nb = document.getElementById('nb-' + id);
+  if (nb) nb.classList.add('active');
+  currentPage = id;
+  window.scrollTo(0, 0);
+  if (id === 'riwayat')   renderHistory();
+  if (id === 'statistik') renderStatistik();
+}
+function toggleMobileMenu(){
+  document.getElementById('navHam').classList.toggle('open');
+  document.getElementById('navMobile').classList.toggle('open');
+}
+function closeMobileMenu(){
+  document.getElementById('navHam').classList.remove('open');
+  document.getElementById('navMobile').classList.remove('open');
+}
+
+/* ═══════════════════════════════════════════
+   SLIDERS
+   ═══════════════════════════════════════════ */
+function updateSlider(field, val, suffix) {
+  suffix = suffix || '';
+  document.getElementById('v-' + field).textContent = val + suffix;
+  var labels = {nilai:'Nilai',hadir:'Hadir',tugas:'Tugas',ujian:'Ujian'};
+  var el = document.getElementById('prev-' + field);
+  if (el) el.textContent = labels[field] + ': ' + val + suffix;
+  updateEstimation();
+}
+function updateEstimation() {
+  var n = parseInt(document.getElementById('p-nilai').value);
+  var h = parseInt(document.getElementById('p-hadir').value);
+  var t = parseInt(document.getElementById('p-tugas').value);
+  var u = parseInt(document.getElementById('p-ujian').value);
+  var res = predictJS(n, h, t, u);
+  var el = document.getElementById('prev-est');
+  if (el) {
+    el.textContent = (res.lulus ? '✓ Kemungkinan LULUS' : '✗ Kemungkinan TIDAK LULUS') +
+      ' (skor ' + res.score + ')';
+    el.style.color = res.lulus ? 'rgba(74,144,196,0.9)' : 'rgba(192,57,43,0.9)';
+  }
+}
+
+/* ═══════════════════════════════════════════
+   PREDICT — menggunakan JS engine, bukan fetch
+   ═══════════════════════════════════════════ */
+function doPredict() {
+  // Validasi nama
+  var nama = document.getElementById('p-nama').value.trim();
+  var ff   = document.getElementById('ff-nama');
+  if (!nama) {
+    document.getElementById('p-nama').classList.add('error');
+    ff.classList.add('has-error');
+    document.getElementById('p-nama').focus();
+    return;
+  }
+  document.getElementById('p-nama').classList.remove('error');
+  ff.classList.remove('has-error');
+
+  var kelas   = document.getElementById('p-kelas').value.trim();
+  var jurusan = document.getElementById('p-jurusan').value.trim();
+  var smt     = document.getElementById('p-smt').value.trim();
+  var n = parseInt(document.getElementById('p-nilai').value);
+  var h = parseInt(document.getElementById('p-hadir').value);
+  var t = parseInt(document.getElementById('p-tugas').value);
+  var u = parseInt(document.getElementById('p-ujian').value);
+
+  // Simulasi loading singkat agar terasa "analisis"
+  var btn  = document.getElementById('btnSubmit');
+  var icon = document.getElementById('btn-icon');
+  var text = document.getElementById('btn-text');
+  btn.classList.add('loading');
+  icon.innerHTML = '<circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/><path d="M12 2a10 10 0 0 1 10 10" stroke="white" stroke-width="2" fill="none"/>';
+  icon.classList.add('spin');
+  text.textContent = 'Menganalisis...';
+
+  setTimeout(function() {
+    // Jalankan prediksi JS
+    var result = predictJS(n, h, t, u);
+
+    btn.classList.remove('loading');
+    icon.classList.remove('spin');
+    icon.innerHTML = '<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>';
+    text.textContent = 'Analisis Sekarang';
+
+    var lulus  = result.lulus;
+    var cls    = lulus ? 'lulus' : 'tidak';
+    var status = lulus ? 'LULUS / NAIK KELAS' : 'TIDAK LULUS / TINGGAL KELAS';
+    var now    = new Date();
+    var timeStr = now.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+    // Tampilkan panel
+    var panel = document.getElementById('resultPanel');
+    panel.style.display = 'block';
+
+    var head = document.getElementById('rp-head');
+    head.className = 'rp-head ' + cls;
+    document.getElementById('rp-tag').textContent =
+      'Hasil analisis untuk ' + nama + (kelas ? ' · ' + kelas : '') +
+      ' — Skor ' + result.score;
+    document.getElementById('rp-status').textContent = status;
+
+    document.getElementById('rm-nilai').textContent = n;
+    document.getElementById('rm-hadir').textContent = h + '%';
+    document.getElementById('rm-tugas').textContent = t;
+    document.getElementById('rm-ujian').textContent = u;
+    document.getElementById('r-pct').textContent    = result.akurasi.toFixed(1) + '%';
+    document.getElementById('r-time').textContent   = timeStr;
+
+    // Confidence bar
+    var bar = document.getElementById('r-bar');
+    bar.className = 'bar-fg ' + cls;
+    setTimeout(function(){ bar.style.width = Math.min(100, result.akurasi) + '%'; }, 50);
+
+    // Breakdown komponen
+    var compData = [
+      {id:'rb-nilai', label:'Nilai rata-rata', val:n, weight:30, contrib:result.contribs.nilai, color:'var(--navy)'},
+      {id:'rb-hadir', label:'Kehadiran',       val:h, weight:25, contrib:result.contribs.hadir, color:'var(--sky2)'},
+      {id:'rb-tugas', label:'Tugas selesai',   val:t, weight:20, contrib:result.contribs.tugas, color:'var(--gold)'},
+      {id:'rb-ujian', label:'Ujian akhir',     val:u, weight:25, contrib:result.contribs.ujian, color:'var(--green)'},
+    ];
+    compData.forEach(function(c) {
+      var el = document.getElementById(c.id);
+      el.innerHTML =
+        '<span class="rb-lbl">' + c.label + '</span>' +
+        '<div class="rb-track"><div class="rb-fill" style="width:' + c.val + '%;background:' + c.color + '"></div></div>' +
+        '<span class="rb-pct">' + c.val + (c.label==='Kehadiran'?'%':'') + '</span>' +
+        '<span class="rb-contrib">+' + c.contrib.toFixed(1) + ' pt</span>';
+    });
+
+    // Rekomendasi
+    var recEl = document.getElementById('rp-recommendation');
+    recEl.className = 'rp-recommendation ' + cls;
+    recEl.innerHTML = '<strong>' + (lulus ? '✓ Rekomendasi' : '⚠ Perhatian') + '</strong>' + result.rec.msg;
+
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+    // Simpan ke history
+    history_data.unshift({
+      nama: nama, kelas: kelas||'—', jurusan: jurusan||'—', smt: smt||'—',
+      nilai: n, hadir: h, tugas: t, ujian: u,
+      lulus: lulus, akurasi: result.akurasi.toFixed(1),
+      score: result.score, time: timeStr
+    });
+    updateHomeStats();
+    showToast(lulus ? 'success' : 'error',
+      lulus ? '✓ Prediksi selesai: LULUS (skor ' + result.score + ')' :
+              '✗ Prediksi selesai: TIDAK LULUS (skor ' + result.score + ')');
+  }, 600); // 600ms animasi loading
+}
+
+function resetForm() {
+  document.getElementById('resultPanel').style.display = 'none';
+  ['p-nama','p-kelas','p-jurusan','p-smt'].forEach(function(id){
+    document.getElementById(id).value = '';
+  });
+  var defaults = {nilai:75,hadir:85,tugas:80,ujian:78};
+  Object.keys(defaults).forEach(function(k){
+    document.getElementById('p-'+k).value = defaults[k];
+    var suffix = k==='hadir'?'%':'';
+    document.getElementById('v-'+k).textContent = defaults[k]+suffix;
+  });
+  updateEstimation();
+  window.scrollTo(0,0);
+}
+
+/* ═══════════════════════════════════════════
+   HISTORY
+   ═══════════════════════════════════════════ */
+function detectSem(smtStr) {
+  if (!smtStr || smtStr === '—') return 'unknown';
+  var lower = smtStr.toLowerCase();
+  if (lower.indexOf('genap') !== -1) return 'genap';
+  if (lower.indexOf('ganjil') !== -1) return 'ganjil';
+  return 'unknown';
+}
+function setSemTab(tab) {
+  activeSemTab = tab;
+  ['all','genap','ganjil'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.remove('active');
+  });
+  document.getElementById('tab-'+tab).classList.add('active');
+  renderHistory();
+}
+function renderHistory() {
+  var t = history_data.length;
+  var l = history_data.filter(function(d){return d.lulus}).length;
+  document.getElementById('st-total').textContent = t;
+  document.getElementById('st-lulus').innerHTML   = '<span>'+l+'</span>';
+  document.getElementById('st-tidak').textContent = t - l;
+  document.getElementById('st-rate').textContent  = t>0 ? Math.round(l/t*100)+'%' : '—';
+
+  var filtered = activeSemTab === 'all' ? history_data.slice() :
+    history_data.filter(function(d){ return detectSem(d.smt) === activeSemTab; });
+
+  var hint = document.getElementById('sem-empty-hint');
+  if (activeSemTab !== 'all' && t > 0 && filtered.length === 0) {
+    hint.textContent = 'Tidak ada data semester '+(activeSemTab==='genap'?'Genap':'Ganjil')+
+      '. Pastikan kolom Semester diisi dengan kata "Genap" atau "Ganjil".';
+    hint.classList.add('show');
+  } else {
+    hint.classList.remove('show');
+  }
+
+  var list = document.getElementById('hist-list');
+  if (!t) {
+    list.innerHTML = '<div class="hist-empty"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="12" y2="13"/></svg>Belum ada riwayat prediksi.</div>';
+    return;
+  }
+  if (!filtered.length) {
+    list.innerHTML = '<div class="hist-empty">Tidak ada data untuk semester ini.</div>';
+    return;
+  }
+
+  var html = '';
+  filtered.forEach(function(d, i) {
+    var realIdx = history_data.indexOf(d);
+    html += '<div class="hist-row" onclick="openStudentModal('+realIdx+')" tabindex="0">' +
+      '<div class="hr-idx">'+String(i+1).padStart(2,'0')+'</div>' +
+      '<div><div class="hr-name">'+escHtml(d.nama)+'</div><div class="hr-meta">'+escHtml(d.kelas)+' · '+escHtml(d.smt)+'</div></div>' +
+      '<div class="hr-conf col-conf">'+d.akurasi+'%</div>' +
+      '<div class="hr-time col-time">'+d.time+'</div>' +
+      '<div style="text-align:right"><span class="badge '+(d.lulus?'lulus':'tidak')+'">'+(d.lulus?'Lulus':'Tidak')+'</span></div>' +
+      '</div>';
+  });
+  list.innerHTML = html;
+}
+function openStudentModal(idx) {
+  var d   = history_data[idx];
+  var cls = d.lulus ? 'lulus' : 'tidak';
+  var inits = d.nama.split(' ').slice(0,2).map(function(w){return w[0]}).join('').toUpperCase();
+  document.getElementById('modal-avatar').className   = 'modal-avatar '+cls;
+  document.getElementById('modal-avatar').textContent = inits;
+  document.getElementById('modal-student-name').textContent = d.nama;
+  document.getElementById('modal-student-sub').textContent  = d.kelas+(d.jurusan&&d.jurusan!=='—'?' · '+d.jurusan:'');
+  document.getElementById('modal-status-badge').innerHTML   = '<span class="badge '+cls+'">'+(d.lulus?'Lulus / Naik Kelas':'Tidak Lulus / Tinggal Kelas')+'</span>';
+  document.getElementById('modal-metrics').innerHTML =
+    '<div class="modal-metric"><span class="modal-metric-val '+cls+'">'+d.nilai+'</span><div class="modal-metric-lbl">Nilai</div></div>'+
+    '<div class="modal-metric"><span class="modal-metric-val '+cls+'">'+d.hadir+'%</span><div class="modal-metric-lbl">Hadir</div></div>'+
+    '<div class="modal-metric"><span class="modal-metric-val '+cls+'">'+d.tugas+'</span><div class="modal-metric-lbl">Tugas</div></div>'+
+    '<div class="modal-metric"><span class="modal-metric-val '+cls+'">'+d.ujian+'</span><div class="modal-metric-lbl">Ujian</div></div>';
+  document.getElementById('modal-conf-pct').textContent = d.akurasi+'%';
+  var bar = document.getElementById('modal-conf-bar');
+  bar.className = 'bar-fg '+cls;
+  bar.style.width = '0%';
+  document.getElementById('modal-info-table').innerHTML =
+    '<tr><td>Kelas</td><td>'+escHtml(d.kelas)+'</td></tr>'+
+    '<tr><td>Jurusan</td><td>'+escHtml(d.jurusan)+'</td></tr>'+
+    '<tr><td>Semester</td><td>'+escHtml(d.smt)+'</td></tr>'+
+    '<tr><td>Skor gabungan</td><td>'+(d.score||'—')+'</td></tr>'+
+    '<tr><td>Waktu prediksi</td><td>'+d.time+'</td></tr>';
+  document.getElementById('modalBackdrop').classList.add('open');
+  setTimeout(function(){ bar.style.width = Math.min(100, parseFloat(d.akurasi))+'%'; }, 80);
+}
+function closeStudentModal(){
+  document.getElementById('modalBackdrop').classList.remove('open');
+}
+function handleBackdropClick(e){
+  if (e.target===document.getElementById('modalBackdrop')) closeStudentModal();
+}
+function clearHistory() {
+  if (!history_data.length){ showToast('','⚠ Riwayat sudah kosong'); return; }
+  if (!confirm('Hapus semua riwayat prediksi?')) return;
+  history_data = [];
+  updateHomeStats();
+  renderHistory();
+  showToast('','✓ Riwayat berhasil dihapus');
+}
+function updateHomeStats() {
+  var t = history_data.length;
+  var l = history_data.filter(function(d){return d.lulus}).length;
+  document.getElementById('hs-total').textContent = t;
+  document.getElementById('hs-rate').textContent  = t>0 ? Math.round(l/t*100)+'%' : '—';
+}
+
+/* ═══════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════ */
+function showToast(type, msg) {
+  var wrap = document.getElementById('toast-wrap');
+  var el   = document.createElement('div');
+  el.className = 'toast '+(type||'');
+  el.innerHTML = '<span class="toast-icon">'+(type==='error'?'⚠':'✓')+'</span><span>'+msg+'</span>';
+  wrap.appendChild(el);
+  setTimeout(function(){
+    el.classList.add('out');
+    setTimeout(function(){el.remove();},250);
+  },3500);
+}
+
+/* ═══════════════════════════════════════════
+   STATISTIK
+   ═══════════════════════════════════════════ */
+function renderStatistik() {
+  var data = history_data;
+  var n    = data.length;
+  var lulus = data.filter(function(d){return d.lulus}).length;
+  var tidak = n - lulus;
+  var avgConf  = n ? (data.reduce(function(s,d){return s+parseFloat(d.akurasi)},0)/n).toFixed(1) : null;
+  var avgNilai = n ? Math.round(data.reduce(function(s,d){return s+d.nilai},0)/n) : null;
+  document.getElementById('kpi-total').textContent     = n;
+  document.getElementById('kpi-lulus').textContent     = lulus;
+  document.getElementById('kpi-tidak').textContent     = tidak;
+  document.getElementById('kpi-lulus-pct').textContent = n ? Math.round(lulus/n*100)+'% dari total' : '—';
+  document.getElementById('kpi-tidak-pct').textContent = n ? Math.round(tidak/n*100)+'% dari total' : '—';
+  document.getElementById('kpi-avgconf').textContent   = avgConf ? avgConf+'%' : '—';
+  document.getElementById('kpi-avgnilai').textContent  = avgNilai !== null ? avgNilai : '—';
+  document.getElementById('stats-sub').textContent     = n
+    ? 'Berdasarkan '+n+' prediksi dalam sesi ini · diperbarui real-time'
+    : 'Belum ada data — lakukan prediksi di halaman Prediksi';
+  if (!n) {
+    ['chart-donut-wrap','chart-dist-wrap','chart-komponen-wrap','chart-conf-wrap'].forEach(function(id){
+      document.getElementById(id).innerHTML = '<div class="no-data"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Belum ada data prediksi</div>';
+    });
+    return;
+  }
+  renderDonut(lulus, tidak);
+  renderDist(data);
+  renderKomponen(data);
+  renderConfDist(data);
+}
+function renderDonut(lulus, tidak) {
+  var total = lulus+tidak; var pL = lulus/total;
+  var r=48,cx=60,cy=60,sw=20,C=2*Math.PI*r;
+  var html = '<div class="donut-wrap">'+
+    '<svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120">'+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="var(--cream2)" stroke-width="'+sw+'"/>'+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="var(--navy)" stroke-width="'+sw+'"'+
+    ' stroke-dasharray="'+(pL*C).toFixed(1)+' '+C.toFixed(1)+'"'+
+    ' stroke-dashoffset="0" transform="rotate(-90 '+cx+' '+cy+')"/>'+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="var(--red)" stroke-width="'+sw+'"'+
+    ' stroke-dasharray="'+((1-pL)*C).toFixed(1)+' '+C.toFixed(1)+'"'+
+    ' stroke-dashoffset="'+(-pL*C).toFixed(1)+'" transform="rotate(-90 '+cx+' '+cy+')"/>'+
+    '<text x="'+cx+'" y="'+(cy-5)+'" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="20" font-weight="600" fill="var(--navy)">'+Math.round(pL*100)+'%</text>'+
+    '<text x="'+cx+'" y="'+(cy+11)+'" text-anchor="middle" font-size="9" fill="var(--ink3)" font-family="DM Sans,sans-serif">LULUS</text>'+
+    '</svg>'+
+    '<div class="donut-legend">'+
+    '<div class="donut-legend-item"><span class="donut-legend-dot" style="background:var(--navy)"></span><span><strong>'+lulus+'</strong> Lulus ('+Math.round(pL*100)+'%)</span></div>'+
+    '<div class="donut-legend-item"><span class="donut-legend-dot" style="background:var(--red)"></span><span><strong>'+tidak+'</strong> Tidak ('+Math.round((1-pL)*100)+'%)</span></div>'+
+    '<div style="height:1px;background:var(--border2);margin:4px 0"></div>'+
+    '<div style="font-size:11px;color:var(--ink3)">Total: <strong style="color:var(--ink)">'+total+'</strong></div>'+
+    '</div></div>';
+  document.getElementById('chart-donut-wrap').innerHTML = html;
+}
+function renderDist(data) {
+  var ranges = [
+    {label:'0–49',min:0,max:49,color:'var(--red)'},
+    {label:'50–59',min:50,max:59,color:'#E88020'},
+    {label:'60–69',min:60,max:69,color:'var(--gold)'},
+    {label:'70–79',min:70,max:79,color:'var(--sky2)'},
+    {label:'80–89',min:80,max:89,color:'var(--navy)'},
+    {label:'90–100',min:90,max:100,color:'var(--green)'},
+  ];
+  var counts = ranges.map(function(r){return data.filter(function(d){return d.nilai>=r.min&&d.nilai<=r.max}).length;});
+  var maxC = Math.max.apply(null,counts)||1;
+  document.getElementById('chart-dist-wrap').innerHTML = ranges.map(function(r,i){
+    return '<div class="dist-row"><span class="dist-range">'+r.label+'</span>'+
+      '<div class="dist-bar-wrap"><div class="dist-bar" style="width:'+Math.round(counts[i]/maxC*100)+'%;background:'+r.color+'"></div></div>'+
+      '<span class="dist-count">'+counts[i]+'</span></div>';
+  }).join('');
+}
+function renderKomponen(data) {
+  var n = data.length;
+  var avgs = {Nilai:Math.round(data.reduce(function(s,d){return s+d.nilai},0)/n),
+              Hadir:Math.round(data.reduce(function(s,d){return s+d.hadir},0)/n),
+              Tugas:Math.round(data.reduce(function(s,d){return s+d.tugas},0)/n),
+              Ujian:Math.round(data.reduce(function(s,d){return s+d.ujian},0)/n)};
+  var colors = {Nilai:'var(--navy)',Hadir:'var(--sky2)',Tugas:'var(--gold)',Ujian:'var(--green)'};
+  document.getElementById('chart-komponen-wrap').innerHTML = Object.keys(avgs).map(function(k){
+    return '<div class="hbar-row"><span class="hbar-label">'+k+'</span>'+
+      '<div class="hbar-track"><div class="hbar-fill" style="width:'+avgs[k]+'%;background:'+colors[k]+'"></div></div>'+
+      '<span class="hbar-val">'+avgs[k]+'</span></div>';
+  }).join('');
+}
+function renderConfDist(data) {
+  var bands = [
+    {label:'50–59%',min:50,max:59,color:'var(--red)'},
+    {label:'60–69%',min:60,max:69,color:'#E88020'},
+    {label:'70–79%',min:70,max:79,color:'var(--gold)'},
+    {label:'80–89%',min:80,max:89,color:'var(--sky2)'},
+    {label:'90–100%',min:90,max:100,color:'var(--green)'},
+  ];
+  var counts = bands.map(function(b){return data.filter(function(d){var a=parseFloat(d.akurasi);return a>=b.min&&a<=b.max}).length;});
+  var maxC = Math.max.apply(null,counts)||1;
+  document.getElementById('chart-conf-wrap').innerHTML = bands.map(function(b,i){
+    return '<div class="dist-row"><span class="dist-range">'+b.label+'</span>'+
+      '<div class="dist-bar-wrap"><div class="dist-bar" style="width:'+Math.round(counts[i]/maxC*100)+'%;background:'+b.color+'"></div></div>'+
+      '<span class="dist-count">'+counts[i]+'</span></div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════ */
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════ */
+window.addEventListener('load', function(){
+  updateEstimation();
+});
+document.addEventListener('keydown', function(e){
+  if (e.key==='Escape') closeStudentModal();
+});
+</script>
+</body>
+</html>
